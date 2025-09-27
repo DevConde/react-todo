@@ -1,2 +1,6 @@
 # react-todo
-First React application
+My first React application
+
+Using:
+NextJs (React)
+TailwindCSS
