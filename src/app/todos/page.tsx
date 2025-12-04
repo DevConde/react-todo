@@ -12,7 +12,7 @@ export default function Todos() {
 
   return (
     <div>
-      <button onClick={addTodo}>Add Todo</button>
+      <button onClick={addTodo} className="bg-green-700 text-white ml-10 px-2 py-1 rounded cursor-pointer">Add Todo</button>
       <ul>
         {todos.map((todo, index) => (
           <li key={index}>{todo}</li>
