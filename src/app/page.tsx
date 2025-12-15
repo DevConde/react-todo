@@ -1,11 +1,11 @@
 'use client'
 
-import { DndContext, DragEndEvent, UniqueIdentifier, useDroppable } from "@dnd-kit/core";
+import { DndContext, DragEndEvent, UniqueIdentifier } from "@dnd-kit/core";
 import { arrayMove, SortableContext, useSortable, verticalListSortingStrategy } from "@dnd-kit/sortable";
 import { useState } from "react";
 import { Todo } from "./models/todo";
 
-function SortableTodoItem({ id, content }: { id: UniqueIdentifier, content: string }) {
+function SortableTodoItem({ id, content, removeAction }: { id: UniqueIdentifier, content: string, removeAction: () => void }) {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id });
   const style = {
     transform: transform ? `translate3d(${transform.x}px, ${transform.y}px, 0)` : undefined,
@@ -29,7 +29,7 @@ function SortableTodoItem({ id, content }: { id: UniqueIdentifier, content: stri
           className="ml-auto bg-red-400 px-2 py-0.5 text-shadow-white text-white rounded-full hover:cursor-pointer active:brightness-75"
           onPointerDown={(e) => e.stopPropagation()}
           onMouseDown={(e) => e.stopPropagation()}
-          onClick={() => { console.log('deleted') }}
+          onClick={removeAction}
         />
       </div>
     </li >
@@ -78,8 +78,8 @@ export default function Home() {
         <SortableContext items={todos.map((item) => item.id)} strategy={verticalListSortingStrategy}>
           <div className="mx-auto w-full max-w-2xl p-4 bg-indigo-300 rounded-lg mt-3 shadow-xl">
             <ul className="space-y-2">
-              {todos.map((item) => (
-                <SortableTodoItem key={item.id} id={item.id} content={item.title}></SortableTodoItem>
+              {todos.map((item, index) => (
+                <SortableTodoItem key={item.id} id={item.id} content={item.title} removeAction={() => removeTodo(index)}></SortableTodoItem>
               ))}
             </ul>
           </div>
