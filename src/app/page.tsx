@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Todo from "./components/todo";
+import Link from "next/link";
 
 export default function Home() {
   const [todos, setTodos] = useState<string[]>([]);
@@ -18,8 +19,10 @@ export default function Home() {
     setTodos(prev => prev.filter((_, i) => i !== index));
   }
 
+
   return (
     <div className="grid grid-cols-6 gap-4">
+      <Link href="dnd-practice">Go To Dnd Practice</Link>
       <div className="col-span-4 col-start-2">
         <div className="grid grid-cols-12">
           <div className="col-span-11">

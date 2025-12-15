@@ -10,19 +10,7 @@
         "reveal": "always",
         "panel": "dedicated"
       },
-      "problemMatcher": {
-        "owner": "nextjs-dev-server",
-        "pattern": [
-          {
-            "regexp": "^(.*)$"
-          }
-        ],
-        "background": {
-          "activeOnStart": true,
-          "beginsPattern": "Starting the development server",
-          "endsPattern": "Local:"
-        }
-      }
+      "problemMatcher": []
     }
   ]
 }
