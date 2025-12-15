@@ -6,7 +6,7 @@ import type { MouseEvent } from 'react';
 export default function Todo({ children, onRemove }: { children: string, onRemove?: () => void }) {
   const [value, setValue] = useState(false);
 
-  function handleValue() {    
+  function handleValue() {
     setValue(prev => !prev);
   }
 

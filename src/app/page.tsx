@@ -1,17 +1,49 @@
 'use client'
 
+import { DndContext, DragEndEvent, UniqueIdentifier, useDroppable } from "@dnd-kit/core";
+import { arrayMove, SortableContext, useSortable, verticalListSortingStrategy } from "@dnd-kit/sortable";
 import { useState } from "react";
-import Todo from "./components/todo";
-import Link from "next/link";
+import { Todo } from "./models/todo";
+
+function SortableTodoItem({ id, content }: { id: UniqueIdentifier, content: string }) {
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id });
+  const style = {
+    transform: transform ? `translate3d(${transform.x}px, ${transform.y}px, 0)` : undefined,
+    transition,
+    opacity: isDragging ? 0.5 : 1
+  };
+  return (
+    <li ref={setNodeRef} style={style} {...attributes} className="rounded-sm p-3 shadow-md bg-indigo-500">
+      <div className="flex items-center gap-3">
+
+        <span className={`text-white ${isDragging ? 'cursor-grabbing' : 'cursor-grab'}`} {...listeners}>
+          ⋮⋮
+        </span>
+        <input type="checkbox" className="rounded-2xl cursor-pointer" />
+        <span className="text-white">
+          {content}
+        </span>
+        <input
+          type="button"
+          value="&#10006;"
+          className="ml-auto bg-red-400 px-2 py-0.5 text-shadow-white text-white rounded-full hover:cursor-pointer active:brightness-75"
+          onPointerDown={(e) => e.stopPropagation()}
+          onMouseDown={(e) => e.stopPropagation()}
+          onClick={() => { console.log('deleted') }}
+        />
+      </div>
+    </li >
+  )
+}
 
 export default function Home() {
-  const [todos, setTodos] = useState<string[]>([]);
   const [inputValue, setInputValue] = useState('');
+  const [todos, setTodos] = useState<Todo[]>([]);
 
-  const addTodo = () => {
+  function addTodo() {
     const text = inputValue.trim();
     if (!text) return;
-    setTodos(prev => [text, ...prev]); // Always add to the start of the list
+    setTodos(prev => [{ title: text, isCompleted: false, id: text }, ...prev]); // Always add to the start of the list
     setInputValue('');
   };
 
@@ -19,29 +51,40 @@ export default function Home() {
     setTodos(prev => prev.filter((_, i) => i !== index));
   }
 
+  function handleDragEnd(event: DragEndEvent) {
+    const { active, over } = event;
+    if (over && active.id !== over.id) {
+      setTodos((items) => {
+        const oldIndex = items.findIndex(item => item.id === active.id);
+        const newIndex = items.findIndex(item => item.id === over.id);
+        return arrayMove(items, oldIndex, newIndex);
+      });
+    }
+  }
 
   return (
-    <div className="grid grid-cols-6 gap-4">
-      <Link href="dnd-practice">Go To Dnd Practice</Link>
-      <div className="col-span-4 col-start-2">
-        <div className="grid grid-cols-12">
-          <div className="col-span-11">
-            <input className="bg-neutral-200 border-2 rounded-md w-full px-4 py-3 focus:outline-0" type="text" placeholder="Just another todo..." value={inputValue} onChange={e => setInputValue(e.target.value)} />
-          </div>
-          <div className="col-span-1">
-            <input className="border-2 rounded-md px-2 py-3 ml-2 w-full hover:cursor-pointer" type="button" value="Add it" onClick={addTodo} />
-          </div>
-        </div>
-        <div className="mt-10 grid grid-cols-6">
-          <div className="col-span-6">
-            <div>
-              {todos.map((todo, index) => (
-                <Todo key={index} onRemove={() => removeTodo(index)}>{todo}</Todo>
-              ))}
-            </div>
-          </div>
+    <div className="min-h-screen bg-slate-200 py-10">
+
+      <div className="mx-auto w-full max-w-2xl p-4 bg-indigo-300 rounded-lg mt-10 shadow-xl">
+        <h1 className="mb-4 text-xl font-bold text-center text-white drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.8)]">Just Another Todo List</h1>
+        <div className="flex gap-2">
+          <input className="flex-1 bg-indigo-400 text-white rounded-md px-4 py-3 shadow-md focus:outline-0" type="text" placeholder="Just another todo..." value={inputValue} onChange={(e) => { setInputValue(e.target.value) }}></input>
+          <input className="text-white rounded-md bg-indigo-600 px-3 py-3 hover:cursor-pointer active:brightness-75" type="button" value="add" onClick={addTodo} />
         </div>
       </div>
+
+      {/* Items container */}
+      <DndContext onDragEnd={handleDragEnd}>
+        <SortableContext items={todos.map((item) => item.id)} strategy={verticalListSortingStrategy}>
+          <div className="mx-auto w-full max-w-2xl p-4 bg-indigo-300 rounded-lg mt-3 shadow-xl">
+            <ul className="space-y-2">
+              {todos.map((item) => (
+                <SortableTodoItem key={item.id} id={item.id} content={item.title}></SortableTodoItem>
+              ))}
+            </ul>
+          </div>
+        </SortableContext>
+      </DndContext>
     </div>
   );
 }
