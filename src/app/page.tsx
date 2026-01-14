@@ -23,10 +23,11 @@ function SortableTodoItem({ id, content, removeAction }: { id: UniqueIdentifier,
         <span className="text-white">
           {content}
         </span>
+
         <input
           type="button"
           value="&#10006;"
-          className="ml-auto bg-red-400 px-2 py-0.5 text-shadow-white text-white rounded-full hover:cursor-pointer active:brightness-75"
+          className="ml-auto text-indigo-200 px-2 py-0.5 text-shadow-white rounded-full hover:cursor-pointer active:brightness-75"
           onPointerDown={(e) => e.stopPropagation()}
           onMouseDown={(e) => e.stopPropagation()}
           onClick={removeAction}
@@ -43,7 +44,7 @@ export default function Home() {
   function addTodo() {
     const text = inputValue.trim();
     if (!text) return;
-    setTodos(prev => [{ title: text, isCompleted: false, id: Math.random() }, ...prev]); // Always add to the start of the list
+    setTodos(prev => [{ title: text, isCompleted: false, id: Math.random().toString(36).substring(2, 9) }, ...prev]); // Always add to the start of the list
     setInputValue('');
   };
 
@@ -62,27 +63,30 @@ export default function Home() {
     }
   }
 
+  const contextArea = <div className="mx-auto w-full max-w-2xl p-4 bg-indigo-300 rounded-lg mt-3 shadow-xl">
+    <ul className="space-y-2">
+      {todos.map((item, index) => (
+        <SortableTodoItem key={item.id} id={item.id} content={item.title} removeAction={() => removeTodo(index)}></SortableTodoItem>
+      ))}
+    </ul>
+  </div>;
+
   return (
     <div className="min-h-screen bg-gray-100 py-10">
-
       <div className="mx-auto w-full max-w-2xl p-4 bg-indigo-300 rounded-lg mt-10 shadow-xl">
-        <h1 className="mb-4 text-xl font-bold text-center text-white drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.8)]">Just Another Todo List</h1>
-        <div className="flex gap-2">
-          <input className="flex-1 bg-indigo-400 text-white rounded-md px-4 py-3 shadow-md focus:outline-0" type="text" placeholder="Just another todo..." value={inputValue} onChange={(e) => { setInputValue(e.target.value) }}></input>
-          <input className="text-white rounded-md bg-indigo-600 px-3 py-3 hover:cursor-pointer active:brightness-75" type="button" value="add" onClick={addTodo} />
-        </div>
+        <h1 className="mb-4 text-xl font-bold text-center text-white">Just another todo list</h1>
+        <form onSubmit={(e) => { e.preventDefault(); addTodo(); }}>
+          <div className="flex gap-2">
+            <input className="flex-1 bg-indigo-400 text-white rounded-md px-4 py-3 shadow-md focus:outline-0" type="text" placeholder="Another todo..." value={inputValue} onChange={(e) => { setInputValue(e.target.value) }}></input>
+            <input className="text-white rounded-md bg-indigo-600 px-3 py-3 hover:cursor-pointer active:brightness-75" type="submit" value="Add" />
+          </div>
+        </form>
       </div>
 
       {/* Items container */}
       <DndContext onDragEnd={handleDragEnd}>
         <SortableContext items={todos.map((item) => item.id)} strategy={verticalListSortingStrategy}>
-          <div className="mx-auto w-full max-w-2xl p-4 bg-indigo-300 rounded-lg mt-3 shadow-xl">
-            <ul className="space-y-2">
-              {todos.map((item, index) => (
-                <SortableTodoItem key={item.id} id={item.id} content={item.title} removeAction={() => removeTodo(index)}></SortableTodoItem>
-              ))}
-            </ul>
-          </div>
+          {todos.length > 0 ? contextArea : null}
         </SortableContext>
       </DndContext>
     </div>
