@@ -43,7 +43,7 @@ export default function Home() {
   function addTodo() {
     const text = inputValue.trim();
     if (!text) return;
-    setTodos(prev => [{ title: text, isCompleted: false, id: text }, ...prev]); // Always add to the start of the list
+    setTodos(prev => [{ title: text, isCompleted: false, id: Math.random() }, ...prev]); // Always add to the start of the list
     setInputValue('');
   };
 
@@ -63,7 +63,7 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-200 py-10">
+    <div className="min-h-screen bg-gray-100 py-10">
 
       <div className="mx-auto w-full max-w-2xl p-4 bg-indigo-300 rounded-lg mt-10 shadow-xl">
         <h1 className="mb-4 text-xl font-bold text-center text-white drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.8)]">Just Another Todo List</h1>
