@@ -13,13 +13,13 @@ function SortableTodoItem({ id, content, removeAction }: { id: UniqueIdentifier,
     opacity: isDragging ? 0.5 : 1
   };
   return (
-    <li ref={setNodeRef} style={style} {...attributes} className="rounded-sm p-3 shadow-md bg-indigo-500">
+    <li ref={setNodeRef} style={style} {...attributes} className="rounded-sm p-3 shadow-md bg-emerald-500">
       <div className="flex items-center gap-3">
 
         <span className={`text-white ${isDragging ? 'cursor-grabbing' : 'cursor-grab'}`} {...listeners}>
           ⋮⋮
         </span>
-        <input type="checkbox" className="rounded-2xl cursor-pointer" />
+        <input type="checkbox" className="w-4 h-4 rounded-xs border hover:cursor-pointer" />
         <span className="text-white">
           {content}
         </span>
@@ -27,7 +27,7 @@ function SortableTodoItem({ id, content, removeAction }: { id: UniqueIdentifier,
         <input
           type="button"
           value="&#10006;"
-          className="ml-auto text-indigo-200 px-2 py-0.5 text-shadow-white rounded-full hover:cursor-pointer active:brightness-75"
+          className="ml-auto text-emerald-200 px-2 py-0.5 text-shadow-white rounded-full hover:cursor-pointer active:brightness-75"
           onPointerDown={(e) => e.stopPropagation()}
           onMouseDown={(e) => e.stopPropagation()}
           onClick={removeAction}
@@ -63,7 +63,7 @@ export default function Home() {
     }
   }
 
-  const contextArea = <div className="mx-auto w-full max-w-2xl p-4 bg-indigo-300 rounded-lg mt-3 shadow-xl">
+  const contextArea = <div className="mx-auto w-full max-w-2xl p-4 bg-emerald-300 rounded-lg mt-3 shadow-xl">
     <ul className="space-y-2">
       {todos.map((item, index) => (
         <SortableTodoItem key={item.id} id={item.id} content={item.title} removeAction={() => removeTodo(index)}></SortableTodoItem>
@@ -73,12 +73,12 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-gray-100 py-10">
-      <div className="mx-auto w-full max-w-2xl p-4 bg-indigo-300 rounded-lg mt-10 shadow-xl">
+      <div className="mx-auto w-full max-w-2xl p-4 bg-emerald-300 rounded-lg mt-10 shadow-xl">
         <h1 className="mb-4 text-xl font-bold text-center text-white">Just another todo list</h1>
         <form onSubmit={(e) => { e.preventDefault(); addTodo(); }}>
           <div className="flex gap-2">
-            <input className="flex-1 bg-indigo-400 text-white rounded-md px-4 py-3 shadow-md focus:outline-0" type="text" placeholder="Another todo..." value={inputValue} onChange={(e) => { setInputValue(e.target.value) }}></input>
-            <input className="text-white rounded-md bg-indigo-600 px-3 py-3 hover:cursor-pointer active:brightness-75" type="submit" value="Add" />
+            <input className="flex-1 bg-emerald-400 text-white rounded-md px-4 py-3 shadow-md focus:outline-0" type="text" placeholder="Another todo..." value={inputValue} onChange={(e) => { setInputValue(e.target.value) }}></input>
+            <input className="text-white rounded-md bg-emerald-600 px-3 py-3 hover:cursor-pointer active:brightness-75" type="submit" value="Add" />
           </div>
         </form>
       </div>
